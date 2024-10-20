@@ -1,6 +1,7 @@
 const HeroSection = () => {
   return (
-    <div>HeroSection</div>
+    <div className="relative w-full h-full">
+    </div>
   )
 }
 

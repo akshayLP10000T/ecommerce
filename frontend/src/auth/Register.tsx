@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
+import { Loader2, Mail, PenBoxIcon, PersonStandingIcon, PhoneCall, User2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { RegisterFormType } from "./types";
@@ -75,7 +75,7 @@ const Register = () => {
         if (res.data.success) {
           toast.success(res.data.message + " Please login to continue...");
           navigate("/login", {
-            replace: true
+            replace: true,
           });
         }
       } catch (error) {
@@ -102,64 +102,88 @@ const Register = () => {
           {/* Register form */}
           <form className="space-y-1" onSubmit={(e) => formSubmitHandler(e)}>
             <div>
-              <Label htmlFor="email">Full Name</Label>
-              <Input
-                type="name"
-                name="fullName"
-                value={formData.fullName}
-                onChange={(e) => valueChangeHandler(e)}
-                placeholder="Your FullName"
-              />
+              <Label htmlFor="fullName">Full Name</Label>
+              <div className="relative">
+                <Input
+                  type="name"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={(e) => valueChangeHandler(e)}
+                  placeholder="Your FullName"
+                  className="pl-10"
+                />
+                <PersonStandingIcon className="text-gray-600 dark:text-gray-400 absolute top-1/2 -translate-y-1/2 left-0 ml-2" />
+              </div>
             </div>
-            <div>
+            <div className="relative">
               <Label htmlFor="email">Email</Label>
-              <Input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={(e) => valueChangeHandler(e)}
-                placeholder="Enter your Email"
-              />
+              <div className="relative">
+                <Input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={(e) => valueChangeHandler(e)}
+                  placeholder="Enter your Email"
+                  className="pl-10"
+                />
+                <Mail className="text-gray-600 dark:text-gray-400 absolute top-1/2 -translate-y-1/2 left-0 ml-2" />
+              </div>
             </div>
             <div>
-              <Label htmlFor="email">Password</Label>
-              <Input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={(e) => valueChangeHandler(e)}
-                placeholder="Enter your Password"
-              />
+              <Label htmlFor="password">Password</Label>
+              <div className="relative">
+                <Input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={(e) => valueChangeHandler(e)}
+                  placeholder="Enter your Password"
+                  className="pl-10"
+                />
+                <PenBoxIcon className="text-gray-600 dark:text-gray-400 absolute top-1/2 -translate-y-1/2 left-0 ml-2" />
+              </div>
             </div>
             <div>
-              <Label htmlFor="email">Confirm Password</Label>
-              <Input
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={(e) => valueChangeHandler(e)}
-                placeholder="Confirm Password"
-              />
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <div className="relative">
+                <Input
+                  type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={(e) => valueChangeHandler(e)}
+                  placeholder="Confirm Password"
+                  className="pl-10"
+                />
+                <PenBoxIcon className="text-gray-600 dark:text-gray-400 absolute top-1/2 -translate-y-1/2 left-0 ml-2" />
+              </div>
             </div>
             <div>
-              <Label htmlFor="email">Age</Label>
-              <Input
-                type="number"
-                name="age"
-                value={formData.age}
-                onChange={(e) => valueChangeHandler(e)}
-                placeholder="Your age"
-              />
+              <Label htmlFor="age">Age</Label>
+              <div className="relative">
+                <Input
+                  type="number"
+                  name="age"
+                  value={formData.age}
+                  onChange={(e) => valueChangeHandler(e)}
+                  placeholder="Your age"
+                  className="pl-10"
+                />
+                <User2 className="text-gray-600 dark:text-gray-400 absolute top-1/2 -translate-y-1/2 left-0 ml-2" />
+              </div>
             </div>
             <div>
-              <Label htmlFor="email">Contact Number</Label>
-              <Input
-                type="number"
-                name="contactNumber"
-                value={formData.contactNumber}
-                onChange={(e) => valueChangeHandler(e)}
-                placeholder="Confirm Password"
-              />
+              <Label htmlFor="contactNumber">Contact Number</Label>
+              <div className="relative">
+                <Input
+                  type="number"
+                  name="contactNumber"
+                  value={formData.contactNumber}
+                  onChange={(e) => valueChangeHandler(e)}
+                  placeholder="Confirm Password"
+                  className="pl-10"
+                />
+                <PhoneCall className="text-gray-600 dark:text-gray-400 absolute top-1/2 -translate-y-1/2 left-0 ml-2" />
+              </div>
             </div>
             <div>
               {loading ? (

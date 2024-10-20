@@ -13,7 +13,7 @@ import { useState } from "react";
 import { Link, replace, useNavigate } from "react-router-dom";
 import { LoginFormType } from "./types";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Mail, PenBoxIcon } from "lucide-react";
 import axios from "axios";
 import { setUser } from "@/redux/userSlice";
 import { useDispatch } from "react-redux";
@@ -91,23 +91,31 @@ const Login = () => {
           <form className="space-y-2" onSubmit={(e) => formSubmitHandler(e)}>
             <div>
               <Label htmlFor="email">Email</Label>
-              <Input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={(e) => valueChangeHandler(e)}
-                placeholder="Enter your Email"
-              />
+              <div className="relative">
+                <Input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={(e) => valueChangeHandler(e)}
+                  placeholder="Enter your Email"
+                  className="pl-10"
+                />
+                <Mail className="text-gray-600 dark:text-gray-400 absolute top-1/2 -translate-y-1/2 left-0 ml-2" />
+              </div>
             </div>
             <div>
-              <Label htmlFor="email">Password</Label>
-              <Input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={(e) => valueChangeHandler(e)}
-                placeholder="Enter your Password"
-              />
+                <Label htmlFor="email">Password</Label>
+              <div className="relative">
+                <Input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={(e) => valueChangeHandler(e)}
+                  placeholder="Enter your Password"
+                  className="pl-10"
+                />
+              <PenBoxIcon className="text-gray-600 dark:text-gray-400 absolute top-1/2 -translate-y-1/2 left-0 ml-2" />
+              </div>
             </div>
             <div>
               {loading ? (
