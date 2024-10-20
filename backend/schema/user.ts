@@ -36,6 +36,11 @@ const userSchema = new mongoose.Schema<UserType>({
         type: String,
         default: "",
     },
+    storeOwner: {
+        type: Boolean,
+        default: false,
+        required: true,
+    }
 
 }, {timestamps: true});
 

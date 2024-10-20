@@ -1,6 +1,7 @@
 import { Response, Request } from "express";
 import { User } from "../schema/user";
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 export const register = async (req: Request, res: Response)=>{
     try {
@@ -65,6 +66,16 @@ export const login = async (req: Request, res: Response)=>{
             });
         }
 
+        const token = jwt.sign({
+            userId: user._id
+        }, process.env.SECRET_KEY!, {
+            expiresIn: '3d'
+        });
+
+        res.cookie('token', token, {httpOnly: true, sameSite: 'strict', maxAge: 3*24*60*60*100});
+
+        user.save();
+
         const userWithourPassword = await User.findOne({email}).select("-password");
 
         res.status(200).json({
@@ -77,6 +88,48 @@ export const login = async (req: Request, res: Response)=>{
 
         console.log(error);
 
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
+    }
+}
+
+export const updateProfile = async (req: Request, res: Response)=>{
+    try {
+
+        const userId = req.id;
+        const { fullName, email, address, city, country, storeOwner } = req.body;
+        
+        const updatedData = { fullName, email, address, city, country, storeOwner };
+
+        const user = await User.findByIdAndUpdate(userId, updatedData, {
+            new: true
+        }).select("-password");
+
+        return res.status(200).json({
+            success: true,
+            message: "Profile updated",
+            user,
+        });
+        
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
+    }
+}
+
+export const logout = async (_: Request, res: Response)=>{
+    try {
+
+        return res.clearCookie("token").status(200).json({
+            success: true,
+            message: "Logged out successfully",
+        });
+        
+    } catch (error) {
         return res.status(500).json({
             success: false,
             message: "Internal server error",

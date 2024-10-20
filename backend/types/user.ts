@@ -7,4 +7,5 @@ export interface UserType{
     address: string | null;
     city: string | null;
     country: string | null;
+    storeOwner: boolean;
 }
