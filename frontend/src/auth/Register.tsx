@@ -13,7 +13,8 @@ import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { RegisterFormType } from "./types";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Register = () => {
   //Form data usestate
@@ -28,6 +29,8 @@ const Register = () => {
 
   const [loading, setLoading] = useState<boolean>(false); //Loading to show the user on API implementation
 
+  const navigate = useNavigate(); // Navigator to navigate from one page to different
+
   //Form value change handler
   const valueChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -37,7 +40,7 @@ const Register = () => {
     });
   };
 
-  const formSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); //Preventing page to reload
 
     if (
@@ -56,13 +59,29 @@ const Register = () => {
       toast.error("Age or contact number cannot be negative");
     } else {
       //For API implementation
-
       try {
         setLoading(true); //Setting loading true on API calling
+        const res = await axios.post(
+          "http://localhost:8080/api/v1/user/register",
+          formData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
+
+        if (res.data.success) {
+          toast.success(res.data.message + " Please login to continue...");
+          navigate("/login", {
+            replace: true
+          });
+        }
       } catch (error) {
         console.log(error);
       } finally {
-        setLoading(false); //Setting loadin false whether code works or come error
+        setLoading(false); //Setting loading false whether code works or come error
       }
     }
   };
@@ -83,7 +102,7 @@ const Register = () => {
           {/* Register form */}
           <form className="space-y-1" onSubmit={(e) => formSubmitHandler(e)}>
             <div>
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Full Name</Label>
               <Input
                 type="name"
                 name="fullName"
@@ -161,7 +180,11 @@ const Register = () => {
         <CardFooter className="-mt-5 w-full">
           <p className="text-end w-full">
             Already a user?{" "}
-            <Link to={"/login"} replace className="text-primary hover:underline">
+            <Link
+              to={"/login"}
+              replace
+              className="text-primary hover:underline"
+            >
               Login
             </Link>
           </p>

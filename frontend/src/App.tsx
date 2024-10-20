@@ -4,6 +4,7 @@ import HeroSection from "./components/MainLayout/HeroSection";
 import Main from "./pages/MainLayout";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
+//Routes using react-router-dom
 const appRouter = createBrowserRouter([
   {
     path: "/",
@@ -34,7 +35,7 @@ const appRouter = createBrowserRouter([
 const App = () => {
   return (
     <div className="w-full h-screen">
-      <RouterProvider router={appRouter}></RouterProvider>
+      <RouterProvider router={appRouter}></RouterProvider> {/*Router Provider */}
     </div>
   )
 }

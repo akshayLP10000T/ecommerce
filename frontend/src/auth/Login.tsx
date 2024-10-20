@@ -10,10 +10,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, replace, useNavigate } from "react-router-dom";
 import { LoginFormType } from "./types";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
+import axios from "axios";
+import { setUser } from "@/redux/userSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   //Form data usestate
@@ -24,12 +27,16 @@ const Login = () => {
 
   const [loading, setLoading] = useState<boolean>(false); //Loading to show the user on API implementation
 
+  const navigate = useNavigate(); //Navigator to different pages
+
+  const dispatch = useDispatch(); // For dispatching the data into redux store
+
   //Form value change handler
   const valueChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const formSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  const formSubmitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault(); //Preventing page to reload
 
     if (formData.email.trim() === "" || formData.password.trim() === "") {
@@ -39,15 +46,31 @@ const Login = () => {
       //For API implementation
 
       try {
-
         setLoading(true); //Setting loading true on API calling
 
-      } catch (error) {
+        const res = await axios.post(
+          "http://localhost:8080/api/v1/user/login",
+          formData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+            withCredentials: true,
+          }
+        );
 
+        if (res.data.success) {
+          dispatch(setUser(res.data.user)); // Dispatching the user into redux store
+          toast.success(res.data.message); // Showing toast to tell user
+          navigate("/", {
+            // Navigating to home page
+            replace: true,
+          });
+        }
+      } catch (error: any) {
         console.log(error);
-
-      }
-      finally{
+        toast.error(error.response.data.message);
+      } finally {
         setLoading(false); //Setting loading false whether code works or come error
       }
     }
@@ -88,10 +111,7 @@ const Login = () => {
             </div>
             <div>
               {loading ? (
-                <Button
-                  disabled
-                  className="text-white bg-primary mt-3 w-full"
-                >
+                <Button disabled className="text-white bg-primary mt-3 w-full">
                   <Loader2 className="animate-spin" /> Please Wait...
                 </Button>
               ) : (
@@ -108,7 +128,11 @@ const Login = () => {
         <CardFooter className="-mt-5 w-full">
           <p className="text-end w-full">
             Not a user?{" "}
-            <Link to={"/register"} replace className="text-primary hover:underline">
+            <Link
+              to={"/register"}
+              replace
+              className="text-primary hover:underline"
+            >
               SignUp
             </Link>
           </p>
