@@ -40,7 +40,12 @@ const userSchema = new mongoose.Schema<UserType>({
         type: Boolean,
         default: false,
         required: true,
-    }
+    },
+    appliedForStore: {
+        type: Boolean,
+        default: false,
+        required: true,
+    },
 
 }, {timestamps: true});
 

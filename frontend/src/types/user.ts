@@ -1,12 +1,13 @@
-export interface UserType{
+export interface User{
+    _id: string;
     fullName: string;
     email: string;
     password: string;
+    confirmPassword: string;
     age: number;
     contactNumber: number;
-    address: string | null;
-    city: string | null;
-    country: string | null;
+    city: string;
+    address: string;
     storeOwner: boolean;
     appliedForStore: boolean;
 }

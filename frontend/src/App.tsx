@@ -1,6 +1,7 @@
 import Login from "./auth/Login";
 import Register from "./auth/Register";
 import HeroSection from "./components/MainLayout/HeroSection";
+import Profile from "./components/MainLayout/Profile";
 import Main from "./pages/MainLayout";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
@@ -15,6 +16,10 @@ const appRouter = createBrowserRouter([
       {
         path: "/",
         element: <HeroSection />,
+      },
+      {
+        path: "/profile",
+        element: <Profile />
       },
     ],
   },

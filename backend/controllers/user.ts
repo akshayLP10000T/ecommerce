@@ -3,13 +3,13 @@ import { User } from "../schema/user";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-export const register = async (req: Request, res: Response)=>{
+export const register = async (req: Request, res: Response) => {
     try {
 
         const { fullName, email, password, age, contactNumber } = req.body;
 
-        let user = await User.findOne({email});
-        if(user){
+        let user = await User.findOne({ email });
+        if (user) {
             return res.status(400).json({
                 success: false,
                 message: "Email id already registered",
@@ -25,14 +25,14 @@ export const register = async (req: Request, res: Response)=>{
             contactNumber,
         });
 
-        const userWithoutPassword = await User.findOne({email}).select("-password");
+        const userWithoutPassword = await User.findOne({ email }).select("-password");
 
         return res.status(201).json({
             success: true,
             message: "Account created successfully",
             user: userWithoutPassword,
         });
-        
+
     } catch (error: any) {
         console.log(error);
 
@@ -43,14 +43,14 @@ export const register = async (req: Request, res: Response)=>{
     }
 }
 
-export const login = async (req: Request, res: Response)=>{
+export const login = async (req: Request, res: Response) => {
     try {
 
         const { email, password } = req.body;
 
-        const user = await User.findOne({email});
+        const user = await User.findOne({ email });
 
-        if(!user){
+        if (!user) {
             return res.status(400).json({
                 success: false,
                 message: "Incorrect email or password",
@@ -59,7 +59,7 @@ export const login = async (req: Request, res: Response)=>{
 
         const isPasswordMatched = await bcrypt.compare(password, user.password);
 
-        if(!isPasswordMatched){
+        if (!isPasswordMatched) {
             return res.status(400).json({
                 success: false,
                 message: "Incorrect email or password",
@@ -72,18 +72,18 @@ export const login = async (req: Request, res: Response)=>{
             expiresIn: '3d'
         });
 
-        res.cookie('token', token, {httpOnly: true, sameSite: 'strict', maxAge: 3*24*60*60*100});
+        res.cookie('token', token, { httpOnly: true, sameSite: 'strict', maxAge: 3 * 24 * 60 * 60 * 100 });
 
         user.save();
 
-        const userWithourPassword = await User.findOne({email}).select("-password");
+        const userWithourPassword = await User.findOne({ email }).select("-password");
 
         res.status(200).json({
             success: true,
             message: `Welcome Back ${user.fullName}`,
             user: userWithourPassword,
         });
-        
+
     } catch (error: any) {
 
         console.log(error);
@@ -95,12 +95,12 @@ export const login = async (req: Request, res: Response)=>{
     }
 }
 
-export const updateProfile = async (req: Request, res: Response)=>{
+export const updateProfile = async (req: Request, res: Response) => {
     try {
 
         const userId = req.id;
         const { fullName, email, address, city, country, storeOwner } = req.body;
-        
+
         const updatedData = { fullName, email, address, city, country, storeOwner };
 
         const user = await User.findByIdAndUpdate(userId, updatedData, {
@@ -112,7 +112,7 @@ export const updateProfile = async (req: Request, res: Response)=>{
             message: "Profile updated",
             user,
         });
-        
+
     } catch (error) {
         return res.status(500).json({
             success: false,
@@ -121,15 +121,50 @@ export const updateProfile = async (req: Request, res: Response)=>{
     }
 }
 
-export const logout = async (_: Request, res: Response)=>{
+export const logout = async (_: Request, res: Response) => {
     try {
 
         return res.clearCookie("token").status(200).json({
             success: true,
             message: "Logged out successfully",
         });
-        
+
     } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
+    }
+}
+
+export const applyForStore = async (req: Request, res: Response) => {
+    try {
+
+        const userId = req.id;
+
+        const { fullName, email, age, contactNumber, city, address } = req.body;
+        const data = {
+            fullName,
+            email,
+            age,
+            contactNumber,
+            city,
+            address,
+            appliedForStore: true,
+        }
+
+        const user = await User.findByIdAndUpdate(userId, data, {
+            new: true
+        }).select("-password");
+
+        return res.status(200).json({
+            success: true,
+            message: "Applied for store wait till we complete your request",
+            user,
+        });
+
+    } catch (error) {
+        console.log(error);
         return res.status(500).json({
             success: false,
             message: "Internal server error",

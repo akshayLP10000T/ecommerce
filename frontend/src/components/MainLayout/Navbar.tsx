@@ -1,61 +1,54 @@
 import { Link } from "react-router-dom";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { ShoppingBagIcon } from "lucide-react";
-import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
+import { Search, ShoppingCart, StoreIcon, User2 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
+  const { user } = useSelector((store: any) => store.user);
+
   return (
-    <div className="relative shadow-sm hover:shadow-lg w-full h-fit flex justify-between items-center transition-shadow duration-300 py-7 px-9">
-      <div>
-        <h2 className="uppercase font-bold text-3xl">
-          Store For <span className="text-primary">Hell</span>
-        </h2>
-      </div>
-      <div className="flex gap-5 text-lg items-center">
-        <Link to={"/search/:id"} className="hover:text-primary">
-          Search
+    <nav className="w-full h-full py-3 px-9">
+      <div className="flex items-center justify-between gap-5">
+        <div className="uppercase text-2xl font-extrabold">
+          <Link to={"/"}>
+            Buy For <span className="text-primary">Hell</span>
+          </Link>
+        </div>
+        <Link
+          to={"/search"}
+          className="flex flex-1 items-center px-4 py-2 rounded-md gap-3 hover:bg-zinc-200 transition-colors duration-300"
+        >
+          <Search />
+          <div className="border-0 bg-transparent">Search For Products</div>
         </Link>
-        <Link to={"/profile"} className="hover:text-primary">
-          Profile
-        </Link>
-        <Link to={"/orders"} className="hover:text-primary">
-          My Orders
-        </Link>
-        <Popover>
-          <PopoverTrigger className="border-2 border-gray-400 dark:border-gray-600 px-3 py-1 rounded-md">
-            dashboard
-          </PopoverTrigger>
-          <PopoverContent className="flex flex-col">
-            <Link
-              to={"/admin/orders"}
-              className="hover:bg-gray-200 px-1 py-2 rounded-md"
-            >
-              Orders
-            </Link>
+        <div className="flex gap-3">
+          {user.storeOwner && (
             <Link
               to={"/admin/store"}
-              className="hover:bg-gray-200 px-1 py-2 rounded-md"
+              className="flex gap-1 hover:text-gray-700 dark:text-gray-300"
             >
-              Store
+              <StoreIcon />
+              My Store
             </Link>
-            <Link
-              to={"/admin/items"}
-              className="hover:bg-gray-200 px-1 py-2 rounded-md"
-            >
-              Items
-            </Link>
-          </PopoverContent>
-        </Popover>
-        <Link
-          to={"/cart"}
-          className="hover:text-primary flex items-center flex-col"
-        >
-          <ShoppingBagIcon /> Cart
-        </Link>
-
-        <Button className="text-white">Logout</Button>
+          )}
+          <Link
+            to={"/cart"}
+            className="flex gap-1 hover:text-gray-700 dark:text-gray-300"
+          >
+            <ShoppingCart />
+            <p>Cart</p>
+          </Link>
+          <Link
+            to={"/profile"}
+            className="flex gap-1 hover:text-gray-700 dark:text-gray-300"
+          >
+            <User2 />
+            <p>{user.fullName}</p>
+          </Link>
+        </div>
       </div>
-    </div>
+      <Separator className="mt-2" />
+    </nav>
   );
 };
 
