@@ -1,10 +1,28 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Separator } from "../ui/separator";
 import { Search, ShoppingCart, StoreIcon, User2 } from "lucide-react";
 import { useSelector } from "react-redux";
+import { Button } from "../ui/button";
+import axios from "axios";
+import { toast } from "sonner";
 
 const Navbar = () => {
-  const { user } = useSelector((store: any) => store.user);
+  const { user } = useSelector((store: any) => store.user); // Getting user data from redux store
+  const navigate = useNavigate(); // Navigator to send user to different page
+
+  //To logout the user
+  const logoutHandler = async ()=>{
+    const res = await axios.get("http://localhost:8080/api/v1/user/logout", {
+      withCredentials: true,
+    });
+
+    if(res.data.success){
+      navigate("/login", {
+        replace: true
+      });
+      toast.success(res.data.message);
+    }
+  }
 
   return (
     <nav className="w-full h-full py-3 px-9">
@@ -21,7 +39,7 @@ const Navbar = () => {
           <Search />
           <div className="border-0 bg-transparent">Search For Products</div>
         </Link>
-        <div className="flex gap-3">
+        <div className="flex gap-3 items-center">
           {user.storeOwner && (
             <Link
               to={"/admin/store"}
@@ -45,6 +63,7 @@ const Navbar = () => {
             <User2 />
             <p>{user.fullName}</p>
           </Link>
+          <Button onClick={logoutHandler} className="text-white">Logout</Button>
         </div>
       </div>
       <Separator className="mt-2" />
