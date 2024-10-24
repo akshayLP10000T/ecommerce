@@ -5,14 +5,15 @@ declare global{
     namespace Express{
         interface Request{
             id: string;
+            storeOwner: boolean;
         }
     }
 }
 
-export const isAuthenticated = async (req: Request, res: Response, next: NextFunction)=>{
+export const isAuthenticatedStoreOwner = async (req: Request, res: Response, next: NextFunction)=>{
     try {
 
-        const {token} = req.cookies;
+        const token = req.cookies.token;
 
         if(!token){
             return res.status(401).json({
@@ -30,7 +31,15 @@ export const isAuthenticated = async (req: Request, res: Response, next: NextFun
             })
         }
 
-        req.id = decode.userId;
+        if(!req.storeOwner){
+            return res.status(401).json({
+                success: false,
+                message: "You are not",
+            });
+        }
+
+        req.id = decode.storeOwnerId;
+        req.storeOwner = decode.storeOwner;
 
         next();
         

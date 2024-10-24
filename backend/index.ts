@@ -5,6 +5,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import connectDB from './database/connectDB';
 import userRoute from './routes/user';
+import adminRoute from './routes/admin';
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ app.use(cors(corsOptions));
 
 //Own API's for data
 app.use("/api/v1/user", userRoute);
+app.use("/api/v1/admin", adminRoute);
 
 //Server listening
 app.listen(PORT, async ()=>{

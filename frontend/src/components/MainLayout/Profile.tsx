@@ -8,6 +8,14 @@ import { toast } from "sonner";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { setUser } from "@/redux/userSlice";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 
 const Profile = () => {
   //Get user data from redux store
@@ -70,22 +78,32 @@ const Profile = () => {
   };
 
   //For applying the user to open a store
-  const applyForStore = async () => {
+  const applyForStore = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
       setLoading(true);
 
-      const res = await axios.put(
-        "http://localhost:8080/api/v1/user/store-apply",
-        formData,
-        {
-          withCredentials: true,
+      if (
+        formData.address?.trim() === "" ||
+        formData.city?.trim() === "" ||
+        formData.age?.toString().trim() === "" ||
+        formData.fullName?.trim() === "" ||
+        formData.age! <= 0
+      ) {
+        toast.error("Check all fields");
+      } else {
+        const res = await axios.put(
+          "http://localhost:8080/api/v1/user/store-apply",
+          formData,
+          {
+            withCredentials: true,
+          }
+        );
+        if (res.data.success) {
+          dispatch(setUser(res.data.user));
+          setFormData({ ...formData, appliedForStore: true });
+          toast.success(res.data.message);
         }
-      );
-
-      if (res.data.success) {
-        dispatch(setUser(res.data.user));
-        setFormData({...formData, appliedForStore: true});
-        toast.success(res.data.message);
       }
     } catch (error: any) {
       console.log(error);
@@ -187,12 +205,93 @@ const Profile = () => {
                 getting things ready for you
               </div>
             ) : !loading ? (
-              <Button
-                onClick={applyForStore}
-                className="text-white w-full mt-5"
-              >
-                Apply For Store
-              </Button>
+              <Dialog>
+                <DialogTrigger className="w-full bg-primary text-white py-2 mt-3 rounded-md">
+                  Apply for store
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Open your own store and add items</DialogTitle>
+                    <DialogDescription>
+                      Fill and check all details and submit, we will give you
+                      access of your store in some days
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={(e)=>applyForStore(e)} className="space-y-2">
+                    <div>
+                      <Label htmlFor="fullName">Full Name</Label>
+                      <Input
+                        placeholder="FullName"
+                        value={formData.fullName}
+                        name="fullName"
+                        type="name"
+                        onChange={(e) => valueChangeHandler(e)}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="email">Email</Label>
+                      <Input
+                        disabled
+                        placeholder="Email"
+                        value={formData.email}
+                        name="email"
+                        type="email"
+                        onChange={(e) => valueChangeHandler(e)}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="contactNumber">Contact Number</Label>
+                      <Input
+                        disabled
+                        placeholder="Contact Number"
+                        value={formData.contactNumber}
+                        name="contactNumber"
+                        type="number"
+                        onChange={(e) => valueChangeHandler(e)}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="age">age</Label>
+                      <Input
+                        placeholder="Age"
+                        value={formData.age}
+                        name="age"
+                        type="number"
+                        onChange={(e) => valueChangeHandler(e)}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="city">City</Label>
+                      <Input
+                        placeholder="City"
+                        value={formData.city}
+                        name="city"
+                        type="city"
+                        onChange={(e) => valueChangeHandler(e)}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="address">Address</Label>
+                      <Input
+                        placeholder="Address"
+                        value={formData.address}
+                        name="address"
+                        type="address"
+                        onChange={(e) => valueChangeHandler(e)}
+                      />
+                    </div>
+                    {loading ? (
+                      <Button disabled className="text-white">
+                        <Loader2 className="animate-spin" /> Please Wait...
+                      </Button>
+                    ) : (
+                      <Button type="submit" className="text-white">
+                        Apply
+                      </Button>
+                    )}
+                  </form>
+                </DialogContent>
+              </Dialog>
             ) : (
               <Button className="text-white w-full mt-5" disabled>
                 <Loader2 className="animate-spin" />

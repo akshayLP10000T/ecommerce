@@ -2,6 +2,7 @@ import Login from "./auth/Login";
 import Register from "./auth/Register";
 import HeroSection from "./components/MainLayout/HeroSection";
 import Profile from "./components/MainLayout/Profile";
+import StoreRequest from "./admin/StoreRequest";
 import Main from "./pages/MainLayout";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
@@ -21,6 +22,10 @@ const appRouter = createBrowserRouter([
         path: "/profile",
         element: <Profile />
       },
+      {
+        path: "/admin/store-request",
+        element: <StoreRequest />
+      },
     ],
   },
   {
@@ -38,6 +43,7 @@ const appRouter = createBrowserRouter([
 ]);
 
 const App = () => {
+
   return (
     <div className="w-full h-screen">
       <RouterProvider router={appRouter}></RouterProvider> {/*Router Provider */}

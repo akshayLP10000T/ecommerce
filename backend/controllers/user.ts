@@ -2,6 +2,9 @@ import { Response, Request } from "express";
 import { User } from "../schema/user";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const register = async (req: Request, res: Response) => {
     try {
@@ -67,7 +70,9 @@ export const login = async (req: Request, res: Response) => {
         }
 
         const token = jwt.sign({
-            userId: user._id
+            userId: user._id,
+            storeOwner: user.storeOwner,
+            admin: user.admin
         }, process.env.SECRET_KEY!, {
             expiresIn: '3d'
         });
@@ -91,6 +96,34 @@ export const login = async (req: Request, res: Response) => {
         return res.status(500).json({
             success: false,
             message: "Internal server error",
+        });
+    }
+}
+
+export const getUserData = async (req: Request, res: Response)=>{
+    try {
+
+        const userId = req.id;
+
+        const user = await User.findById(userId).select("-password");
+
+        if(!user){
+            return res.status(401).json({
+                success: false,
+                message: "User not found",
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            user,
+        });
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error please login again",
         });
     }
 }

@@ -1,8 +1,7 @@
-import mongoose from "mongoose";
-import { UserType } from "../types/user";
+import mongoose, { mongo } from "mongoose";
+import { UserTypeDocument } from "../types/user";
 
-const userSchema = new mongoose.Schema<UserType>({
-
+const userSchema = new mongoose.Schema<UserTypeDocument>({
     fullName: {
         type: String,
         required: true,
@@ -14,7 +13,7 @@ const userSchema = new mongoose.Schema<UserType>({
     },
     password: {
         type: String,
-        required: true
+        required: true,
     },
     age: {
         type: Number,
@@ -26,11 +25,11 @@ const userSchema = new mongoose.Schema<UserType>({
     },
     address: {
         type: String,
-        default: "",
+        default: ""
     },
     city: {
         type: String,
-        default: "",
+        default: ""
     },
     country: {
         type: String,
@@ -38,15 +37,23 @@ const userSchema = new mongoose.Schema<UserType>({
     },
     storeOwner: {
         type: Boolean,
-        default: false,
         required: true,
+        default: false,
     },
     appliedForStore: {
+        type: Boolean,
+        required: true,
+        default: false,
+    },
+    admin: {
         type: Boolean,
         default: false,
         required: true,
     },
-
+    store: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Store",
+    }
 }, {timestamps: true});
 
 export const User = mongoose.model("User", userSchema);
